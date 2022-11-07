@@ -1,0 +1,9 @@
+{%extends 'base.html'%}
+{%block content%}
+<h5>Welcome HOME</h5>
+<button>
+    <a href="{%url 'profile_settings'%}">My Profile</a>
+</button><button>
+    <a href="{%url 'logout'%}">Logout</a>
+</button>
+{%endblock content%}

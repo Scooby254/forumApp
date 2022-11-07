@@ -1,0 +1,16 @@
+{%extends 'base.html'%}
+{%block content%}
+<div>
+  <form style="margin-top: 10px;" action="" method="POST">
+    {% csrf_token %}
+    {{login_form}}
+    <h6><a href="#">Forgot password?</a></h6>
+      <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+  {% include 'messages.html' %}
+  <div>
+    <h6>Don't have an account?<a href="{% url 'register' %}"> Register here</a></h6>
+    <h6>Forgot password?<a href="#">Reset password</a></h6>
+  </div>
+</div>
+{%endblock content%}

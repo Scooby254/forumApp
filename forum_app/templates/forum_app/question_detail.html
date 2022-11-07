@@ -1,0 +1,46 @@
+<div class="container">
+    <div id="sub-nav">
+        <!-- <h1 id="fh1">Hey Guys, Let's help :)</h1> -->
+        <!-- <button class="btn" id="logout-btn"><a id="fa" href="" style="color: white; text-decoration: none;">Ask Question</a></button> -->
+
+        <!-- <div style="margin-top: 55px;">
+            <button class="btn btn-primary" id="logout-btn"><a id="fa" href="" style="color: white; text-decoration: none;">Ask Question</a></button>
+        </div> -->
+    </div>
+    <div class="list-question">
+        <div class="questions">
+            <div class="container" style="background-color: rgba(209, 255, 213, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; border-radius: 20px;" >
+                <h3 id="fh3">{{question.title}}</h3>
+                <hr>
+                <h6 id="fh6">{{ question.body|safe }}</h6>
+                <hr>
+                <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(155, 155, 155); text-align: right;">Asked By: <a href="">{{ object.user|title }}</a>
+                    &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+                <br>
+                    <!--  -->
+                <br>
+                <h2>Answers...</h2> <br><br><br>
+
+                {% if not question.answer.all %}
+                    <h3>No Answers yet... <!-- <a href="">Answer Question</a>--> </h3> 
+                {% else %}
+                    {% for answer in question.answer.all %}
+                        <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
+                        <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.name}}</a> - On: {{answer.date_created|date:"j F, Y"}}</i></h3>
+                        <hr>
+                    {% endfor %}
+                {% endif %}
+
+                <a class="btn btn-outline-primary" id="fa" href="" style="text-decoration: none;">Answer Question</a>
+                <a style="text-decoration: none; " class="btn btn-outline-success" href="">&#x270E;</a>
+                <a style="text-decoration: none; " class="btn btn-outline-danger" href="">&#x2716;</a>
+                <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'questions_list' %}">&#x21a9;</a>
+
+                <!--  -->
+            </div> <br><br>
+                <!-- Answer Section -->
+            </div> <br>
+        </div>
+    </div>
+    <br>
+</div>
