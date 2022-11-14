@@ -1,24 +1,23 @@
-<div class="card user-card-full">
-    <div class="row m-l-0 m-r-0">
-        <div class="col-sm-4 bg-c-lite-green user-profile">
-            <div class="card-block text-center text-white">
-                <!-- <div class="m-b-25"> <img src="{{ user.profile.prof_pic.url }}" class="img-radius" alt="User-Profile-Image"> </div> -->
-                <h6 class="f-w-600" style="font-size: 24px; color: black;">Ask Your Question</h6>
-                <p style="font-size: 14px; color: black;">...get contributions from the community!</p> <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content%}
+<div>
+    <div>
+        <div>
+            <div>
+                <h5>Ask Your Question</h5>
             </div>
         </div>
-        <div class="col-sm-8">
-            <div class="card-block">
+        <div>
+            <div>
                 </div>
                 <form action="" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{form.as_p}}
-                        <button class="btn btn-success" id="logout-btn" type="submit">Post Question</button>
-                        <a style="text-decoration: none; " class="btn btn-outline-secondary" href="">Cancel</a>
-                        <!-- <button class="btn btn-secondary" id="logout-btn" type="submit"><a id="fa" href="" style="color: white; text-decoration: none;">Go back</a></button> -->
+                        {{form|crispy}}
+                        <button>Post Question</button>
+                        <a href="{% url 'home' %}">Cancel</a>
                 </form>
-                <div style="margin-top: 10px;">
-                </div>
             </div>
         </div>
 </div>
+{% endblock content %}

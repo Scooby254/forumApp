@@ -1,3 +1,18 @@
+{%extends 'base.html'%}
+{%block content%}
+<h5>Welcome HOME</h5>
+{% if user.is_authenticated %}
+<button>
+    <a href="{%url 'profile_settings'%}">My Profile</a>
+</button>
+<button>
+    <a href="{%url 'logout'%}">Logout</a>
+    {% else %}
+    <!-- <a href="{%url 'login'%}">Login</a> -->
+</button>
+{% endif %}
+
+
 <div class="container">
     <div>
         {% if user.is_authenticated %}
@@ -29,3 +44,4 @@
         </div>
     </div>
 </div>
+{%endblock content%}

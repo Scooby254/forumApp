@@ -1,15 +1,10 @@
 <div class="container">
     <div id="sub-nav">
-        <!-- <h1 id="fh1">Hey Guys, Let's help :)</h1> -->
-        <!-- <button class="btn" id="logout-btn"><a id="fa" href="" style="color: white; text-decoration: none;">Ask Question</a></button> -->
-
-        <!-- <div style="margin-top: 55px;">
-            <button class="btn btn-primary" id="logout-btn"><a id="fa" href="" style="color: white; text-decoration: none;">Ask Question</a></button>
-        </div> -->
     </div>
     <div class="list-question">
         <div class="questions">
-            <div class="container" style="background-color: rgba(209, 255, 213, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; border-radius: 20px;" >
+            <div class="container" style="background-color: rgba(209, 255, 213, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
+            border-radius: 20px;" >
                 <h3 id="fh3">{{question.title}}</h3>
                 <hr>
                 <h6 id="fh6">{{ question.body|safe }}</h6>
@@ -17,7 +12,6 @@
                 <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(155, 155, 155); text-align: right;">Asked By: <a href="">{{ object.user|title }}</a>
                     &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
                 <br>
-                    <!--  -->
                 <br>
                 <h2>Answers...</h2> <br><br><br>
 

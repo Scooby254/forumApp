@@ -61,7 +61,7 @@ def profile_settings(request):
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid:
             form.save()
-            messages.success(request, f'Account Successfully Updated!')
+            messages.success(request, 'Account Successfully Updated!')
             return redirect('profile_settings')
         else:
             messages.warning(request, 'You have entered wrong details. Please give the correct details')
@@ -71,8 +71,10 @@ def profile_settings(request):
 
     return render(request, 'profile_settings.html', context)
 
+
 def home(request):
-    return render(request, 'home.html')
+
+    return render(request, 'forum_app/question_list.html')
 
 #====================================================================================================================
 #============================================ CRUD VIEWS HERE =======================================================

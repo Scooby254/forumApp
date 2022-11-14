@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
 from PIL import Image
+from ckeditor.fields import RichTextField
 
 departments = [('ICT', 'ICT'), ('ODG','ODG'),('Trees', 'Trees'), ('Soils', 'Soils'), ('Landscapes', 'Landscapes')]
 class Profile(models.Model):
@@ -40,7 +41,8 @@ class Categories(models.Model):
 class Question(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=100, null=False, blank=False)
-    body = models.TextField(null=False, blank=False)
+    body = RichTextField()
+    #body = models.TextField(null=False, blank=False)
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now = True)
     categories = models.ManyToManyField(Categories)

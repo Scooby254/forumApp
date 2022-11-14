@@ -1,17 +1,28 @@
-FROM python:3
-
-MAINTAINER Scooby
+FROM python:3.9-buster
 
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /woni
+# install nginx
+RUN apt-get update && apt-get install nginx vim -y --no-install-recommends
+COPY nginx.default /etc/nginx/sites-available/default
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
 
-WORKDIR /woni
+# copy source and install dependencies
+RUN mkdir -p /app
+RUN mkdir -p /app/pip_cache
+RUN mkdir -p /app/forum
 
-ADD . /woni
+WORKDIR /app/forum
 
-COPY ./requirements.txt /woni/requirements.txt
+ADD . /forum
 
+COPY ./requirements.txt ./start-server.sh /forum/
+COPY .pip_cache /app/pip_cache/
+COPY  forum /app/forum/
 RUN pip install -r requirements.txt
+RUN chown -R www-data:www-data /app
 
-COPY . .
+EXPOSE 8020
+STOPSIGNAL SIGTERM
+CMD ["/forum/start-server.sh"]
