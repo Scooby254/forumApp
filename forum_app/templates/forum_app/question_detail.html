@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <div class="container">
     <div id="sub-nav">
     </div>
@@ -10,31 +12,31 @@
                 <h6 id="fh6">{{ question.body|safe }}</h6>
                 <hr>
                 <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(155, 155, 155); text-align: right;">Asked By: <a href="">{{ object.user|title }}</a>
-                    &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
-                <br>
-                <br>
-                <h2>Answers...</h2> <br><br><br>
+                    &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+                <h2>Answers...</h2>
 
                 {% if not question.answer.all %}
-                    <h3>No Answers yet... <!-- <a href="">Answer Question</a>--> </h3> 
+                    <h3>No Answers yet...</h3>
                 {% else %}
                     {% for answer in question.answer.all %}
                         <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
-                        <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.name}}</a> - On: {{answer.date_created|date:"j F, Y"}}</i></h3>
+                        <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
+                        {% if request.user == object.user %}
+                        <a href="">{{answer.correct}}</a>
+                        {%endif%}
                         <hr>
                     {% endfor %}
                 {% endif %}
-
-                <a class="btn btn-outline-primary" id="fa" href="" style="text-decoration: none;">Answer Question</a>
-                <a style="text-decoration: none; " class="btn btn-outline-success" href="">&#x270E;</a>
-                <a style="text-decoration: none; " class="btn btn-outline-danger" href="">&#x2716;</a>
+                {% if request.user != object.user %}
+                <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                {% endif %}
+                <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
+                <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>
                 <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'questions_list' %}">&#x21a9;</a>
-
-                <!--  -->
             </div> <br><br>
-                <!-- Answer Section -->
             </div> <br>
         </div>
     </div>
     <br>
 </div>
+{% endblock content %}

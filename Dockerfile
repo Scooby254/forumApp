@@ -18,7 +18,7 @@ WORKDIR /app/forum
 ADD . /forum
 
 COPY ./requirements.txt ./start-server.sh /forum/
-COPY .pip_cache /app/pip_cache/
+#COPY .pip_cache /app/pip_cache/
 COPY  forum /app/forum/
 RUN pip install -r requirements.txt
 RUN chown -R www-data:www-data /app

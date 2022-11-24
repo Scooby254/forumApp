@@ -27,3 +27,10 @@ class QuestionForm(forms.ModelForm):
         model = Question
         fields = '__all__'
 
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['content']
+        widgets = {
+            'content':forms.TextInput(attrs={'class':'form-control'}),
+        }

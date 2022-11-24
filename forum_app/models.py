@@ -40,6 +40,7 @@ class Categories(models.Model):
 
 class Question(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING)
+    profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=False, blank=False)
     body = RichTextField()
     #body = models.TextField(null=False, blank=False)
@@ -48,7 +49,7 @@ class Question(models.Model):
     categories = models.ManyToManyField(Categories)
     tags = models.ManyToManyField(Tags)
     likes = models.ManyToManyField(User, related_name='questions_post')
-    
+
     def total_likes(self):
         return self.likes.count()
 
@@ -60,16 +61,17 @@ class Question(models.Model):
 
 class Answer(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING)
-    answer = models.TextField()
+    profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
+    content = models.TextField()
     responded_on = models.DateTimeField(auto_now_add=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name="answer", on_delete=models.CASCADE)
     correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user.username} - Answer'
+        return '%s - %s' %(self.question.title, self.question.user)#f'{self.user.username} - Answer'
 
+    def get_absolute_url(self):
+        return reverse('questions_detail', kwargs={'pk':self.pk})
 
-
-
-
-
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)

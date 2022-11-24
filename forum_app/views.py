@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 #from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from .models import Profile
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import CreateUserForm, ProfileForm
+from .forms import CreateUserForm, ProfileForm, AnswerForm
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Question, Answer
+from django.urls import reverse, reverse_lazy
 
 def register(request):
     if request.method == "POST":
@@ -76,8 +77,9 @@ def home(request):
 
     return render(request, 'forum_app/question_list.html')
 
-#====================================================================================================================
-#============================================ CRUD VIEWS HERE =======================================================
+#========================================================================================================================
+#============================================ CRUD CBV VIEWS HERE =======================================================
+#========================================================================================================================
 
 class QuestionListView(ListView):
     model = Question
@@ -96,3 +98,46 @@ class QuestionCreateView(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+class QuestionUpdateView(UserPassesTestMixin, UpdateView):
+    model = Question
+    fields = ['title', 'body']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        question = self.get_object()
+        if self.request.user == question.user:
+            return True
+        else:
+            return False
+
+class QuestionDeleteView(UserPassesTestMixin, DeleteView):
+    model = Question
+    success_url = "/"
+    def test_func(self):
+        question = self.get_object()
+        if self.request.user == question.user:
+            return True
+        else:
+            return False
+
+class AnswerDetailView(CreateView):
+    model = Answer
+    form_class = AnswerForm
+    template_name = "forum_app/question_detail.html"
+
+    def form_valid(self, form):
+        form.instance.question_id = self.kwargs['pk']
+        return super().form_valid(form)
+    success_url= reverse_lazy('questions_detail')
+
+class AddAnswerView(CreateView):
+    form_class = AnswerForm
+    template_name = "forum_app/question_answer.html"
+
+    def form_valid(self, form):
+        form.instance.question_id = self.kwargs['pk']
+        return super().form_valid(form)
+    success_url= reverse_lazy('questions_list')

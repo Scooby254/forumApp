@@ -27,7 +27,7 @@
             <div class="container" style="background-color: rgba(209, 255, 213, 0.808); padding: 5px; 
             box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; border-radius: 20px;">
                 <div id="title-sec" style="display: flex; align-items: center;">
-                    <!-- <a href="{% url 'profile_settings' %}"><img src="{{ request.user.profile.prof_pic.url }}" style="width: 50px;"></a></img> -->
+                    <a href="{% url 'profile_settings' %}"><img src="{{ question.profile.prof_pic.url }}" style="width: 50px;"></a></img>
                     <h3 id="fh3"><a href="{% url 'questions_detail' question.id %}">{{ question.title }}</a></h3>
                 </div>
                 <hr>
