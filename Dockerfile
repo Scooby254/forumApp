@@ -17,10 +17,11 @@ WORKDIR /app/forum
 
 ADD . /forum
 
-COPY ./requirements.txt ./start-server.sh /forum/
+COPY ./requirements.txt app/forum/
+COPY ./start-server.sh app/forum/
 #COPY .pip_cache /app/pip_cache/
 COPY  forum /app/forum/
-RUN pip install -r requirements.txt
+RUN pip install -r app/forum/requirements.txt
 RUN chown -R www-data:www-data /app
 
 EXPOSE 8020
