@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
-#from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import CreateUserForm, ProfileForm, AnswerForm
+from .forms import CreateUserForm, ProfileForm, AnswerForm, ValidateAnswerForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Question, Answer
 from django.urls import reverse, reverse_lazy
@@ -80,6 +80,16 @@ def home(request):
 #========================================================================================================================
 #============================================ CRUD CBV VIEWS HERE =======================================================
 #========================================================================================================================
+def like_view(request, pk):
+    post = get_object_or_404(Question, id=request.POST.get('question_id'))
+    liked = False
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        liked = False
+    else:
+        post.likes.add(request.user)
+        liked = True
+    return HttpResponseRedirect(reverse('questions_detail', args=[str(pk)]))
 
 class QuestionListView(ListView):
     model = Question
@@ -88,6 +98,19 @@ class QuestionListView(ListView):
 
 class QuestionDetailView(DetailView):
     model = Question
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(QuestionDetailView, self).get_context_data()
+        a = get_object_or_404(Question, id=self.kwargs['pk'])
+        total_likes = a.total_likes()
+        liked = False
+
+        if a.likes.filter(id=self.request.user.id).exists():
+            liked = True
+        
+        context['total_likes'] = total_likes
+        context['liked'] = liked
+        return context
 
 
 class QuestionCreateView(CreateView):
@@ -133,11 +156,16 @@ class AnswerDetailView(CreateView):
         return super().form_valid(form)
     success_url= reverse_lazy('questions_detail')
 
+class ValidateAnswerView(UpdateView):
+    form_class = ValidateAnswerForm
+    template_name = "forum_app/validate_answer.html"    
+
 class AddAnswerView(CreateView):
     form_class = AnswerForm
     template_name = "forum_app/question_answer.html"
 
     def form_valid(self, form):
         form.instance.question_id = self.kwargs['pk']
+        form.instance.user = self.request.user
         return super().form_valid(form)
     success_url= reverse_lazy('questions_list')

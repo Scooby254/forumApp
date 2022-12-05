@@ -1,6 +1,6 @@
 FROM python:3.9-buster
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # install nginx
 RUN apt-get update && apt-get install nginx vim -y --no-install-recommends
@@ -9,21 +9,18 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # copy source and install dependencies
-RUN mkdir -p /app
-RUN mkdir -p /app/pip_cache
-RUN mkdir -p /app/forum
+RUN mkdir -p /forum
 
-WORKDIR /app/forum
+WORKDIR /forum
 
-ADD . /forum
+#ADD . /forum
 
-COPY ./requirements.txt app/forum/
-COPY ./start-server.sh app/forum/
-#COPY .pip_cache /app/pip_cache/
-COPY  forum /app/forum/
+#COPY ./requirements.txt /forum/
+
+COPY  . .
 RUN pip install -r app/forum/requirements.txt
 RUN chown -R www-data:www-data /app
 
-EXPOSE 8020
+EXPOSE 8000
 STOPSIGNAL SIGTERM
 CMD ["/forum/start-server.sh"]

@@ -33,4 +33,15 @@ class AnswerForm(forms.ModelForm):
         fields = ['content']
         widgets = {
             'content':forms.TextInput(attrs={'class':'form-control'}),
+            'correct':forms.CheckboxInput()
         }
+    
+class ValidateAnswerForm(forms.ModelForm):
+    correct_flag = forms.BooleanField(required=False, label='Is this the Most Correct Answer?')
+    class Meta:
+        model = Answer
+        fields = ['correct']
+        widgets = {
+            'correct':forms.CheckboxInput()
+        }
+

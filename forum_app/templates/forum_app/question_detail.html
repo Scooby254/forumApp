@@ -13,18 +13,52 @@
                 <hr>
                 <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(155, 155, 155); text-align: right;">Asked By: <a href="">{{ object.user|title }}</a>
                     &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+
+                    <form action="{% url 'like_post' object.pk %}" method="POST">
+                        {% csrf_token %}
+                        {% if user.is_authenticated %}
+                            {% if liked %}
+                                <div style="display: flex; align-items: center; margin-left: 10px;">
+                                    <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 60px;"><img src="https://image.similarpng.com/very-thumbnail/2020/06/Dislike-icon-transparent-PNG.png" alt="" style="width: 40px;"></button> <h5 style="margin-left: 10px; cursor: pointer;"> |  {{ total_likes }} Likes</h5>
+                                </div>
+                            {% else %}
+                                <div style="display: flex; align-items: center; margin-left: 10px;">
+                                    <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 30px;"><img src="https://i.pinimg.com/originals/39/44/6c/39446caa52f53369b92bc97253d2b2f1.png" alt="" style="width: 40px;"></button> <h5 style="margin-left: 10px; cursor: pointer;"> |  {{ total_likes }} Likes</h5>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <h5 style="margin-left: 10px; cursor: pointer;"><a href="{% url 'login' %}">Login</a> to Like Question |  {{ total_likes }} Likes</h5>
+                        {% endif %}
+
+                    </form>
+
                 <h2>Answers...</h2>
 
                 {% if not question.answer.all %}
                     <h3>No Answers yet...</h3>
                 {% else %}
                     {% for answer in question.answer.all %}
-                        <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
-                        <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
-                        {% if request.user == object.user %}
-                        <a href="">{{answer.correct}}</a>
-                        {%endif%}
-                        <hr>
+                        {% if answer.correct %}
+                            <div style="background-color:green">
+                                <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
+                                <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
+                                {% if request.user == object.user %}
+                                    <a href="">Correct?</a>
+                                {% else %}
+                                    <p style="background-color:yellow;">This is the answer to the above question!!!</p>
+                                {%endif%}
+                                <hr>
+                            </div>
+                        {% else %}
+                            <div style="background-color:rgb(196, 194, 194)">
+                                <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
+                                <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
+                                {% if request.user == object.user %}
+                                    <a href="">Correct?</a>
+                                {%endif%}
+                                <hr>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
                 {% if request.user != object.user %}
