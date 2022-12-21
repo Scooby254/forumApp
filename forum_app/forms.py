@@ -37,11 +37,11 @@ class AnswerForm(forms.ModelForm):
         }
     
 class ValidateAnswerForm(forms.ModelForm):
-    correct_flag = forms.BooleanField(required=False, label='Is this the Most Correct Answer?')
+    #correct_flag = forms.BooleanField(required=False, label='Is this the Most Correct Answer?')
     class Meta:
         model = Answer
         fields = ['correct']
-        widgets = {
+        """ widgets = {
             'correct':forms.CheckboxInput()
         }
-
+ """

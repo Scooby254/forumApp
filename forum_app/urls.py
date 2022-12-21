@@ -16,6 +16,7 @@ urlpatterns = [
     path('questions/<int:pk>/update', views.QuestionUpdateView.as_view(), name='questions_update'),
     path('questions/<int:pk>/delete', views.QuestionDeleteView.as_view(), name='questions_delete'),
     path('questions/<int:pk>/answer', views.AddAnswerView.as_view(), name='questions_answer'),
+    path('questions/<int:pk>/validate', views.ValidateAnswerView.as_view(), name='validate_answer'),
     path('like/<int:pk>', views.like_view, name='like_post'),
 
 ]

@@ -43,7 +43,7 @@
                                 <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
                                 <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
                                 {% if request.user == object.user %}
-                                    <a href="">Correct?</a>
+                                    <a href="{% url 'validate_answer' question.id %}">Correct?</a>
                                 {% else %}
                                     <p style="background-color:yellow;">This is the answer to the above question!!!</p>
                                 {%endif%}
@@ -54,7 +54,7 @@
                                 <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
                                 <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
                                 {% if request.user == object.user %}
-                                    <a href="">Correct?</a>
+                                    <a href="{% url 'validate_answer' question.id %}">Correct?</a>
                                 {%endif%}
                                 <hr>
                             </div>
@@ -62,7 +62,11 @@
                     {% endfor %}
                 {% endif %}
                 {% if request.user != object.user %}
-                <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                    {% else %}
+                    <a class="btn btn-outline-primary" id="fa" href="{% url 'login' %}" style="text-decoration: none;">Login to answer this Question</a>
+                    {% endif %}
                 {% endif %}
                 <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
                 <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>

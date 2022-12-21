@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CreateUserForm, ProfileForm, AnswerForm, ValidateAnswerForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Question, Answer
@@ -112,8 +112,7 @@ class QuestionDetailView(DetailView):
         context['liked'] = liked
         return context
 
-
-class QuestionCreateView(CreateView):
+class QuestionCreateView(CreateView, LoginRequiredMixin):
     model = Question
     fields = ['title', 'body']
     #exclude = ['user']
@@ -121,7 +120,7 @@ class QuestionCreateView(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class QuestionUpdateView(UserPassesTestMixin, UpdateView):
+class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
     model = Question
     fields = ['title', 'body']
 
@@ -136,7 +135,7 @@ class QuestionUpdateView(UserPassesTestMixin, UpdateView):
         else:
             return False
 
-class QuestionDeleteView(UserPassesTestMixin, DeleteView):
+class QuestionDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     model = Question
     success_url = "/"
     def test_func(self):
@@ -146,7 +145,7 @@ class QuestionDeleteView(UserPassesTestMixin, DeleteView):
         else:
             return False
 
-class AnswerDetailView(CreateView):
+class AnswerDetailView(CreateView, LoginRequiredMixin):
     model = Answer
     form_class = AnswerForm
     template_name = "forum_app/question_detail.html"
@@ -156,11 +155,12 @@ class AnswerDetailView(CreateView):
         return super().form_valid(form)
     success_url= reverse_lazy('questions_detail')
 
-class ValidateAnswerView(UpdateView):
+class ValidateAnswerView(UpdateView, LoginRequiredMixin):
+    model = Answer
     form_class = ValidateAnswerForm
-    template_name = "forum_app/validate_answer.html"    
+    template_name = "forum_app/validate_answer.html"
 
-class AddAnswerView(CreateView):
+class AddAnswerView(CreateView, LoginRequiredMixin):
     form_class = AnswerForm
     template_name = "forum_app/question_answer.html"
 
