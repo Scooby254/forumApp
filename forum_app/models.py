@@ -62,7 +62,7 @@ class Question(models.Model):
 class Answer(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING)
     profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = RichTextField()
     responded_on = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, related_name="answer", on_delete=models.CASCADE)
     correct = models.BooleanField(default=False)

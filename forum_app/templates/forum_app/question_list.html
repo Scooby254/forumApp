@@ -32,9 +32,9 @@
                 </div>
                 <hr>
                 {% if question.body|wordcount <= 20 %}
-                <h6 id="fh6" style="text-align: left;">{{ question.body}}</h6>
+                <h6 id="fh6" style="text-align: left;">{{ question.body | safe}}</h6>
                 {% else %}
-                <h6 id="fh6" style="text-align: left;">{{ question.body|truncatewords:20}} <a href="{% url 'questions_detail' question.id %}">Read More</a></h6>
+                <h6 id="fh6" style="text-align: left;">{{ question.body|truncatewords:20 |safe}} <a href="{% url 'questions_detail' question.id %}">Read More</a></h6>
                 {% endif %}
                 <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(28, 61, 39);">Asked By: <a href="">{{ question.user }}</a>
                     &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{question.created|date:"j F, Y"}}</h6>

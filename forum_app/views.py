@@ -10,6 +10,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Question, Answer
 from django.urls import reverse, reverse_lazy
 
+#REGISTER A NEW USER
 def register(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
@@ -23,6 +24,7 @@ def register(request):
 
     return render(request, 'register.html', {'form': form})
 
+#LOGIN FUNCTION
 def loginPage(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -48,12 +50,15 @@ def loginPage(request):
     context={'login_form':form}
     return render(request, 'login.html', context)
 
+#LOGOUT A LOGGED IN USER
 @login_required
 def logoutUser(request):
     logout(request)
     messages.warning(request, 'You have been logged out!')
     return redirect('login')
 
+#USER PROFILE TO ADD DETAILS SUCH AS PROFILE IMAGE AND DEPARTMENT
+#WILL USE "Profile" MODEL CLASS WHICH UTILIZES 'PILLOW' LIBRARY FOR IMAGES PROCESSING
 @login_required
 def profile_settings(request):
     profile = request.user.profile
@@ -73,6 +78,7 @@ def profile_settings(request):
     return render(request, 'profile_settings.html', context)
 
 
+#HOMEPAGE SHOWING LIST OF ALL RECENT ASKED QUESTIONS
 def home(request):
 
     return render(request, 'forum_app/question_list.html')
@@ -80,6 +86,8 @@ def home(request):
 #========================================================================================================================
 #============================================ CRUD CBV VIEWS HERE =======================================================
 #========================================================================================================================
+
+#LIKES FUNCTION TO CHECK IF A USER HAS LIKED A QUESTION, IF LIKED, IT INCREMENTS THE LIKES COUNT
 def like_view(request, pk):
     post = get_object_or_404(Question, id=request.POST.get('question_id'))
     liked = False
@@ -91,11 +99,13 @@ def like_view(request, pk):
         liked = True
     return HttpResponseRedirect(reverse('questions_detail', args=[str(pk)]))
 
+#CBV FOR LISTING QUESTIONS FROM THE "Question" MODEL CLASS/TABLE
 class QuestionListView(ListView):
     model = Question
     context_object_name = 'questions'
     ordering = ['-created']
 
+#CBV FOR DISPLAY OF DETAILS OF AN INDIVIDUAL QUESTION
 class QuestionDetailView(DetailView):
     model = Question
 
@@ -112,6 +122,7 @@ class QuestionDetailView(DetailView):
         context['liked'] = liked
         return context
 
+#CBV FOR CREATING A NEW QUESTION/DISCUSSION
 class QuestionCreateView(CreateView, LoginRequiredMixin):
     model = Question
     fields = ['title', 'body']
@@ -120,6 +131,7 @@ class QuestionCreateView(CreateView, LoginRequiredMixin):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+#CBV FOR UPDATING/EDITING A QUESTION/DISCUSSION BY THE USER WHO POSTED THE QUESTION
 class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
     model = Question
     fields = ['title', 'body']
@@ -135,6 +147,7 @@ class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
         else:
             return False
 
+#DELETE VIEW FOR A QUESTION/DISCUSSION, ONLY THE USER WHO POSTED THE QUESTION CAN DELETE IT
 class QuestionDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     model = Question
     success_url = "/"
@@ -145,21 +158,7 @@ class QuestionDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
         else:
             return False
 
-class AnswerDetailView(CreateView, LoginRequiredMixin):
-    model = Answer
-    form_class = AnswerForm
-    template_name = "forum_app/question_detail.html"
-
-    def form_valid(self, form):
-        form.instance.question_id = self.kwargs['pk']
-        return super().form_valid(form)
-    success_url= reverse_lazy('questions_detail')
-
-class ValidateAnswerView(UpdateView, LoginRequiredMixin):
-    model = Answer
-    form_class = ValidateAnswerForm
-    template_name = "forum_app/validate_answer.html"
-
+#CREATE VIEW FOR A RESPONSE TO A PARTICULAR DISCUSSION/QUESTION
 class AddAnswerView(CreateView, LoginRequiredMixin):
     form_class = AnswerForm
     template_name = "forum_app/question_answer.html"
@@ -169,3 +168,21 @@ class AddAnswerView(CreateView, LoginRequiredMixin):
         form.instance.user = self.request.user
         return super().form_valid(form)
     success_url= reverse_lazy('questions_list')
+''' 
+class AnswerDetailView(CreateView, LoginRequiredMixin):
+    model = Answer
+    form_class = AnswerForm
+    template_name = "forum_app/question_detail.html"
+
+    def form_valid(self, form):
+        form.instance.question_id = self.kwargs['pk']
+        return super().form_valid(form)
+    success_url= reverse_lazy('questions_detail') '''
+
+#VALIDATE ANSWER VIEW
+class ValidateAnswerView(UpdateView, LoginRequiredMixin):
+    model = Answer
+    form_class = ValidateAnswerForm
+    template_name = "forum_app/validate_answer.html"
+
+

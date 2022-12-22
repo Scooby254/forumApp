@@ -5,7 +5,6 @@
 <form action="" method="POST">
     {% csrf_token %}
     {{form|crispy}}
-    {{ form.media }}
     <button class="btn btn-success" id="logout-btn" type="submit">Validate Answer</button>
     <a href="{% url 'questions_list' %}" style="text-decoration: none; " class="btn btn-outline-secondary" href="">Cancel</a>
 </form>
