@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'django_filters',
     'django_extensions',
     'ckeditor',
-    'channels',
 
 ]
 
@@ -87,16 +86,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'forum.wsgi.application'
 
-ASGI_APPLICATION = 'forum.asgi.application'
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND':'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
