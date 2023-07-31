@@ -125,7 +125,7 @@ class QuestionDetailView(DetailView):
 #CBV FOR CREATING A NEW QUESTION/DISCUSSION
 class QuestionCreateView(CreateView, LoginRequiredMixin):
     model = Question
-    fields = ['title', 'body']
+    fields = ['title', 'body', 'tags']
     #exclude = ['user']
     def form_valid(self, form):
         form.instance.user = self.request.user

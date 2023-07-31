@@ -41,7 +41,11 @@ class ValidateAnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ['correct']
-        """ widgets = {
-            'correct':forms.CheckboxInput()
+        widgets = {
+            'correct':forms.CheckboxInput(attrs={'id':'correct', 'checked': ''}),
         }
- """
+        def __init__(self, *args, **kwargs):
+            self.valcorrect = kwargs.pop("arg_correct")
+            super(ValidateAnswerForm, self).__init__(*args, **kwargs)
+            self.fields['correct'].initial = False
+

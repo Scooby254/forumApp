@@ -38,7 +38,8 @@
                 {% endif %}
                 <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(28, 61, 39);">Asked By: <a href="">{{ question.user }}</a>
                     &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{question.created|date:"j F, Y"}}</h6>
-                <h5 style="text-align: right; font-size: 12px; font-style: italic;">Tags: {{question.tags}}</h5>
+                <h5 style="text-align: right; font-size: 12px; font-style: italic;">
+                    Tags: {%for tag in question.tags.all%} {{tag|join:' ,'}}{%endfor%}</h5>
             </div> <br>
             {% endfor %}
         </div>
