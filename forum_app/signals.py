@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from . models import Answer
 from .models import Profile
 
+#SIGNAL TO ADD A NEW USER TO A CERTAIN GROUP
 def user_profile(sender, instance, created, **kwargs):
     if created:
         group = Group.objects.get(name='forum_users')
@@ -15,6 +16,7 @@ def user_profile(sender, instance, created, **kwargs):
         print("Forum User Created!!!")
 post_save.connect(user_profile, sender=User)
 
+#SIGNAL FOR NOTIFICATION CREATION WHEN A NEW COMMENT/ANSWER IS POSTED FOR A QUESTION
 def user_comment_post(sender, instance, created, **kwargs):
     if created:
         comment = instance

@@ -1,47 +1,38 @@
 {%extends 'base.html'%}
 {%block content%}
-<h5>Welcome HOME</h5>
-{% if user.is_authenticated %}
-<button>
-    <a href="{%url 'profile_settings'%}">My Profile</a>
-</button>
-<button>
-    <a href="{%url 'logout'%}">Logout</a>
-    {% else %}
-    <!-- <a href="{%url 'login'%}">Login</a> -->
-</button>
-{% endif %}
-
 
 <div class="container">
-    <div>
-        {% if user.is_authenticated %}
-        <button><a href="{% url 'questions_create' %}">Ask Question</a></button>
-        {% else %}
-        <button class="btn"><a href="{% url 'login' %}">Ask Question</button>
-        {% endif %}
-    </div>
     <div class="list-question">
         <div class="questions">
-            {% for question in questions %}
-            <div class="container" style="background-color: rgba(209, 255, 213, 0.808); padding: 5px; 
-            box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; border-radius: 20px;">
-                <div id="title-sec" style="display: flex; align-items: center;">
-                    <a href="{% url 'profile_settings' %}"><img src="{{ question.profile.prof_pic.url }}" style="width: 50px;"></a></img>
-                    <h3 id="fh3"><a href="{% url 'questions_detail' question.id %}">{{ question.title }}</a></h3>
-                </div>
-                <hr>
-                {% if question.body|wordcount <= 20 %}
-                <h6 id="fh6" style="text-align: left;">{{ question.body | safe}}</h6>
-                {% else %}
-                <h6 id="fh6" style="text-align: left;">{{ question.body|truncatewords:20 |safe}} <a href="{% url 'questions_detail' question.id %}">Read More</a></h6>
-                {% endif %}
-                <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(28, 61, 39);">Asked By: <a href="">{{ question.user }}</a>
-                    &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{question.created|date:"j F, Y"}}</h6>
-                <h5 style="text-align: right; font-size: 12px; font-style: italic;">
-                    Tags: {%for tag in question.tags.all%} {{tag|join:' ,'}}{%endfor%}</h5>
-            </div> <br>
-            {% endfor %}
+            <table class="table table-bordered mt-0 table-striped" style="margin-bottom:0px;">
+                <thead class="border-bottom font-italic font-weight-bold">
+                    <tr style="font-weight: bolder;">
+                        <td>Discussion Brief</td>
+                        <td>Author</td>
+                        <td>Replies</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                        <tr>
+                            <td><h4>{{question.title}}</h4></hr>
+                                <p>
+                                    {% if question.body|wordcount <= 20 %}
+                                    <p id="fh6" style="text-align: left;">{{ question.body | safe}}</p>
+                                    {% else %}
+                                    <p id="fh6" style="text-align: left;">{{ question.body|truncatewords:20 |safe}} <a href="{% url 'questions_detail' question.id %}">Read More</a></p>
+                                    {% endif %}
+                                </p>
+                            </td>
+                            <td>{{question.user}}</td>
+                            <td>{{question.answer.all.count}}</td>
+                            <td><a href="{% url 'questions_detail' question.id %}">view</a></td>
+                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

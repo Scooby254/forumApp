@@ -4,22 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Forum App</title>
+    <title>Woni wa Ndoi</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type = "text/css"/>
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}" type = "text/css"/>
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.png' %}">
+   </head>
 <body>
-    <div class="container" style="background: linear-gradient(135deg, #84b87f, #a4d6c1, #4c8361c9);">
-        <h4>Register Here</h4>
+    <div class="container" style="padding: 20px;">
+        <h4 style="margin:0px;" class="title">Register Here</h4>
+        <!-- <div class="justif-content-center h-100"> -->
+            <!-- <img src="logo.png" class="logo" alt=""> -->
             <div class="content">
                 <form action="#" method="post">
                     {% csrf_token %}
-                    <div>
+                    <div style="margin-top: 0px;" class="user-details">
                         <div class="input-box">
-                            <span class="details">Username</span>
+                            <span class="details">Member Number</span>
                             {{form.username}}
                         </div>
                         <div class="input-box">
@@ -41,8 +44,8 @@
                 </form>
                 {% include 'messages.html' %}
                 {% if form.errors %}
-                <div>
-                <div>
+                <div class="col-12 register-field">
+                <div class="alert alert-block alert-danger">
                     <ul>
                     <li>{{form.errors}}</li>
                     </ul>
@@ -50,11 +53,11 @@
                 </div>
                 {% endif %}
 
-                <div style="margin-bottom: 0px;" class="text-center"><h6>Already have an account?<a href="{%url 'login'%}"> Login</a></h6></div>
+                <div style="margin-bottom: 0px;" class="text-center"><h6>Already have an account?<a href="{%url 'woni_app:login'%}"> Login</a></h6></div>
             </div>
             <script>
                 var form_fields = document.getElementsByTagName('input')
-                form_fields[1].placeholder='Username'
+                form_fields[1].placeholder='(e.g) MEM001WON'
                 form_fields[2].placeholder='(e.g) john@domain.com'
                 form_fields[3].placeholder='Password...'
                 form_fields[4].placeholder='Re-enter password...'
@@ -63,6 +66,15 @@
                     form_fields[field].className += 'form-control'
                 }
             </script>
+            <footer style="margin-top: 0px;" id="footer">
+                    <div class="copyright">
+                        &copy;Copyright <strong>Woni Wa Ndoi SHG</strong>. All Rights Reserved
+                    </div>
+                    <div class="credits">
+                        Created by <a href="#"><strong>@Scooby.254</strong> </a> of <a href="#">---Outam Systems---</a>
+                    </div>
+            </footer>
+        <!-- </div> -->
     </div>
 
 </body>

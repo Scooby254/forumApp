@@ -1,80 +1,98 @@
 {% extends 'base.html' %}
 {% block content %}
+{%load static%}
 <div class="container">
-    <div id="sub-nav">
-    </div>
+    <div id="sub-nav"></div>
     <div class="list-question">
         <div class="questions">
-            <div class="container" style="background-color: rgba(209, 255, 213, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
-            border-radius: 20px;" >
-                <h3 id="fh3">{{question.title}}</h3>
-                <hr>
-                <h6 id="fh6">{{ question.body|safe }}</h6>
-                <hr>
-                <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(155, 155, 155); text-align: right;">Asked By: <a href="">{{ object.user|title }}</a>
-                    &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+            <div class="container" style="background-color: rgba(163, 187, 167, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
+                border-radius: 20px;" >
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <h4 class="card-title" style="margin-bottom: 0px; display: inline; float:left">{{question.title}}</h4>
+                        <h6 id="fh6" style="font-size: 15px; font-style: italic; color: rgb(134, 131, 131); display: inline-flex; float: right;">Asked By: <a href="">{{ object.user|title }}</a>
+                            &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p id="fh6" style="margin-top: 0%;">{{ question.body|safe }}</p>
+                    </div>
+                </div>
+                    
+                {% if request.user == object.user %}
+                <div style="text-align: right;">
+                    <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
+                    <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>
+                    <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'questions_list' %}">&#x21a9;</a>
+                </div>
+                {% endif %}
 
                     <form action="{% url 'like_post' object.pk %}" method="POST">
+                        
                         {% csrf_token %}
                         {% if user.is_authenticated %}
                             {% if liked %}
-                                <div style="display: flex; align-items: center; margin-left: 10px;">
-                                    <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 60px;"><img src="https://image.similarpng.com/very-thumbnail/2020/06/Dislike-icon-transparent-PNG.png" alt="" style="width: 40px;"></button> <h5 style="margin-left: 10px; cursor: pointer;"> |  {{ total_likes }} Likes</h5>
+                                <div style="display:inline-flex; margin-left: 10px;">
+                                    <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 60px;"><img src="https://image.similarpng.com/very-thumbnail/2020/06/Dislike-icon-transparent-PNG.png" alt="" style="width: 30px;"></button> <p style="margin-left: 10px; cursor: pointer;"> |  {{ total_likes }} Likes</p>
                                 </div>
                             {% else %}
-                                <div style="display: flex; align-items: center; margin-left: 10px;">
-                                    <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 30px;"><img src="https://i.pinimg.com/originals/39/44/6c/39446caa52f53369b92bc97253d2b2f1.png" alt="" style="width: 40px;"></button> <h5 style="margin-left: 10px; cursor: pointer;"> |  {{ total_likes }} Likes</h5>
+                                <div style="display: flex; margin-left: 10px;">
+                                    <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 60px;"><img src="https://i.pinimg.com/originals/39/44/6c/39446caa52f53369b92bc97253d2b2f1.png" alt="" style="width: 30px;"></button> <p style="margin-left: 10px; cursor: pointer;"> |  {{ total_likes }} Likes</p>
                                 </div>
                             {% endif %}
                         {% else %}
-                            <h5 style="margin-left: 10px; cursor: pointer;"><a href="{% url 'login' %}">Login</a> to Like Question |  {{ total_likes }} Likes</h5>
+                            <p style="margin-left: 10px; cursor: pointer;"><a href="{% url 'login' %}">Login</a> to Like Question |  {{ total_likes }} Likes</p>
                         {% endif %}
 
                     </form>
+                <div class="container" >
+                    <h5>Replies</h5>
 
-                <h2>Answers...</h2>
-
-                {% if not question.answer.all %}
-                    <h3>No Answers yet...</h3>
-                {% else %}
-                    {% for answer in question.answer.all %}
-                        {% if answer.correct %}
-                            <div style="background-color:green">
-                                <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
-                                <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
-                                {% if request.user == object.user %}
-                                    <a href="{% url 'validate_answer' question.id %}">Correct?</a>
-                                {% else %}
-                                    <p style="background-color:yellow;">This is the answer to the above question!!!</p>
-                                {%endif%}
-                                <hr>
-                            </div>
-                        {% else %}
-                            <div style="background-color:rgb(196, 194, 194)">
-                                <h3 style="font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
-                                <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
-                                {% if request.user == object.user %}
-                                    <a href="{% url 'validate_answer' question.id %}">Correct?</a>
-                                {%endif%}
-                                <hr>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-                {% if request.user != object.user %}
-                    {% if user.is_authenticated %}
-                        <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                    {% if not question.answer.all %}
+                        <h3>No Answers yet...</h3>
                     {% else %}
-                    <a class="btn btn-outline-primary" id="fa" href="{% url 'login' %}" style="text-decoration: none;">Login to answer this Question</a>
+                        {% for answer in question.answer.all %}
+                        
+                            {% if answer.correct %}
+                            <div class="row" style="margin-bottom: 10px; border-radius: 10px; background-color:rgb(222, 224, 219); box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px;">
+                                <div class="col-md-1" style=" display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{STATIC_URL}} /static/images/tick.png" style="max-width: 40px;"></img>
+                                </div>
+                                <div class="col-md-11">
+                                    <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3><hr>
+                                    <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
+                                    {% if request.user == object.user %}
+                                        <a href="{% url 'validate_answer' answer.id %}">Correct?</a>
+                                    {%endif%}
+                                    
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="row" style="margin-bottom: 10px; border-radius: 10px; background-color:rgb(222, 224, 219); box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px;">
+                                <div class="col-md-1" style="justify-content: center;">
+                                </div>
+                                <div class="col-md-11">
+                                    <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3><hr>
+                                    <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
+                                    {% if request.user == object.user %}
+                                        <a href="{% url 'validate_answer' answer.id %}">Correct?</a>
+                                    {%endif%}
+                                    
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
-                {% endif %}
-                <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
-                <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>
-                <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'questions_list' %}">&#x21a9;</a>
-            </div> <br><br>
+                    {% if request.user != object.user %}
+                        {% if user.is_authenticated %}
+                            <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                        {% else %}
+                        <a class="btn btn-outline-primary" id="fa" href="{% url 'login' %}" style="text-decoration: none;">Login to answer this Question</a>
+                        {% endif %}
+                    {% endif %}
+                </div>    
             </div> <br>
-        </div>
+        </div> 
     </div>
-    <br>
 </div>
+
 {% endblock content %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import CreateUserForm, ProfileForm, AnswerForm, ValidateAnswerForm
+from .forms import CreateUserForm, ProfileForm, AnswerForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -168,8 +168,8 @@ class AddAnswerView(CreateView, LoginRequiredMixin):
         form.instance.user = self.request.user
         return super().form_valid(form)
     success_url= reverse_lazy('questions_list')
-''' 
-class AnswerDetailView(CreateView, LoginRequiredMixin):
+
+""" class AnswerDetailView(CreateView, LoginRequiredMixin):
     model = Answer
     form_class = AnswerForm
     template_name = "forum_app/question_detail.html"
@@ -177,12 +177,15 @@ class AnswerDetailView(CreateView, LoginRequiredMixin):
     def form_valid(self, form):
         form.instance.question_id = self.kwargs['pk']
         return super().form_valid(form)
-    success_url= reverse_lazy('questions_detail') '''
+    success_url= reverse_lazy('questions_detail') """
 
 #VALIDATE ANSWER VIEW
-class ValidateAnswerView(UpdateView, LoginRequiredMixin):
+class ValidateAnswerView(LoginRequiredMixin, UpdateView):
     model = Answer
-    form_class = ValidateAnswerForm
+    fields = ['correct']
     template_name = "forum_app/validate_answer.html"
+
+    def get_success_url(self):
+        return reverse_lazy('questions_detail', kwargs = {"pk": self.get_object().question.id}) 
 
 
