@@ -53,14 +53,18 @@
             </li>
             {% endif %}
         </ul>
-        {% if request.user.is_staff %}
-        <span><a href="#" class="nav-link"  id="navItem"><button class="btn btn-warning">Go To Admin Page</button></a></span>
-        {% endif %}
+        
     </div>
+    
+    <form action="{% url 'search'%}" class="d-flex" method=POST style="padding-right: 10px;">
+        {% csrf_token %}
+        <input type="search" class="form-control me-2" placeholder="Search" aria-label="Search" name="searched">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+
     {% if user.is_authenticated %}
-    <!-- <span class="hello-msg">Hello, {{request.user.username}} </span> -->
     <a href="{% url 'profile_settings' %}"><img src="{{request.user.profile.prof_pic.url}}" class="profile_pic" alt="" style="height: 40px; margin-right: 5px;"></a>
-    <a id="navlink" href="{%url 'logout'%}"><button style="background-color: white; margin-right: 10px;" class="btn">Logout</button></a>
+    <a id="navlink" href="{%url 'logout'%}"><button style="background-color: rgb(255, 255, 255); margin-right: 10px;" class="btn">Logout</button></a>
     {%else%}
     <a id="navlink" href="{%url 'login'%}"><button class="btn btn-primary">Login</button></a>
     {%endif%}

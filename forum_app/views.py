@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Question, Answer
 from django.urls import reverse, reverse_lazy
+from .filters import QuestionFilter
 
 #REGISTER A NEW USER
 def register(request):
@@ -104,6 +105,17 @@ class QuestionListView(ListView):
     model = Question
     context_object_name = 'questions'
     ordering = ['-created']
+    """ myFilter = QuestionFilter()
+    context = {'myfilter':myFilter} """
+def search(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        search_res = Question.objects.filter(body__contains=searched)
+        return render(request, 'search.html', {'searched':searched, 'search_res':search_res})
+    else:
+        return render(request, 'search.html', {})
+
+    
 
 #CBV FOR DISPLAY OF DETAILS OF AN INDIVIDUAL QUESTION
 class QuestionDetailView(DetailView):

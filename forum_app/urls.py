@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
     path('profile/', views.profile_settings, name='profile_settings'),
+    path('search/', views.search, name='search'),
 
     #=====================CRUD URLS===========================
     path('questions/', views.QuestionListView.as_view(), name='questions_list'),

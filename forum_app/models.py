@@ -54,7 +54,7 @@ class Question(models.Model):
         return self.likes.count()
 
     def __str__(self):
-        return f'{self.user.username} - Question'
+        return f'{self.title}  by {self.user.username} '
 
     def get_absolute_url(self):
         return reverse('questions_detail', kwargs={'pk':self.pk})
