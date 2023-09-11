@@ -54,7 +54,7 @@ class Question(models.Model):
         return self.likes.count()
 
     def __str__(self):
-        return f'{self.user.username} - Question'
+        return f'{self.title}  by {self.user.username} '
 
     def get_absolute_url(self):
         return reverse('questions_detail', kwargs={'pk':self.pk})
@@ -68,7 +68,7 @@ class Answer(models.Model):
     correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s - %s' %(self.question.title, self.question.user)#f'{self.user.username} - Answer'
+        return '%s - %s' %(self.question.title, self.content)#f'{self.user.username} - Answer'
 
     def get_absolute_url(self):
         return reverse('questions_detail', kwargs={'pk':self.pk})

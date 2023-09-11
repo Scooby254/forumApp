@@ -1,0 +1,11 @@
+{%extends 'base.html'%}
+{%block content%}
+{% if searched %}
+<h3>You searched for {{searched}}.</h3>
+    {%for res in search_res%}
+    <a href="{% url 'questions_detail' res.id %}">{{res}}</a><br>
+    {%endfor%}
+{%else%}
+<h1>You didnt type anything</h1>
+{%endif%}
+{%endblock content%}

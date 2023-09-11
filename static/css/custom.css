@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+*{
+  font-family: 'Poppins', sans-serif !important;
+}
+#footer .copyright {
+    text-align: center;
+    padding-top: 30px;
+}
+#footer .credits {
+    text-align: center;
+    font-size: 14px;
+    color: #1e2a3a;
+}
+#footer .credits a {
+    color: rgb(12, 82, 235);
+}
+#footer .credits a:hover{
+    color: rgb(252, 219, 32);
+}
+
+

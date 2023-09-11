@@ -1,14 +1,15 @@
 {%extends 'base.html'%}
+{%block header%}<h4 style="text-align: center;">Login Here</h4> {% endblock header%}
 {%block content%}
-<div>
-  <form style="margin-top: 10px;" action="" method="POST">
+<div class="container">
+  <form style="margin-top: 10px; text-align: center;" action="" method="POST">
     {% csrf_token %}
-    {{login_form}}
+    {{login_form.as_p}}
     <h6><a href="#">Forgot password?</a></h6>
       <button class="btn btn-primary" type="submit">Login</button>
   </form>
   {% include 'messages.html' %}
-  <div>
+  <div style="text-align: center;">
     <h6>Don't have an account?<a href="{% url 'register' %}"> Register here</a></h6>
     <h6>Forgot password?<a href="#">Reset password</a></h6>
   </div>

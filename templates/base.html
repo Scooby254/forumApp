@@ -5,10 +5,63 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type = "text/css"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type = "text/css"/>
+    <script type="text/javascript" src="{{ STATIC_URL }} /static/js/jquery-3.1.1.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.png' %}">
+    <style>
+        .jumbotron{
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 20px;
+            background:linear-gradient(135deg, #84b87f, #a4d6c1, #4c8361c9);
+            border-radius: 10px;
+        }
+        .container .jumbotron .title{
+            font-size: 25px;
+            font-weight: 600;
+            position: relative;
+            margin: 20px 0 12px 0;
+        }
+        .container .jumbotron .title::before{
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 30px;
+            border-radius: 5px;
+            background: rgb(221, 243, 242);
+        }
+    </style>
 </head>
+{% include "navbar.html" %}
 <body>
-    {%block content%}
+    <div class="container">
+        <div class="col-md-12 offset-md-0 mt-0">
+            <div class="jumbotron">
+                {%block header%}<h4 class="title">Reshaping Africa Forums</h4> {% endblock header%}
+                <hr class="my-2">
+                {% block content%}
 
-    {%endblock content%}
+                {% endblock content%}
+
+            <hr class="my-2">
+            <footer id="footer" class="mt-0">
+                <div class="container">
+                    <div class="copyright">
+                        &copy;Copyright <strong>ICRAF</strong>. All Rights Reserved
+                    </div>
+                    <!-- <div class="credits">
+                        Created by <a href="#"><strong>@Scooby.254</strong> </a>
+                    </div> -->
+                </div>
+            </footer>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
