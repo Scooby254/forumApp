@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+{%load static%}
+<div class="container">
+    <div id="sub-nav"></div>
+    <div class="list-question">
+        <div class="questions">
+            <div class="container" style="background-color: rgba(163, 187, 167, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
+                border-radius: 20px;" >
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <h4 class="card-title" style="margin-bottom: 0px; display: inline; float:left">{{question.title}}</h4>
+                        <h6 id="fh6" style="font-size: 15px; font-style: italic; color: rgb(134, 131, 131); display: inline-flex; float: right;">Asked By: <a href="">{{ object.user|title }}</a>
+                            &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p id="fh6" style="margin-top: 0%;">{{ question.body|safe }}</p>
+                    </div>
+                </div>
+                    
+                {% if request.user == object.user %}
+                <div style="text-align: right;">
+                    <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
+                    <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>
+                    <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'questions_list' %}">&#x21a9;</a>
+                </div>
+                {% endif %}
+
+                <div class="container" >
+                    <h5>Replies</h5>
+
+                    <!-- Comments Form --> 
+                    <h2>Add a new comment</h2>
+                    <form action="." method="post">
+                        {{ answer_form.as_p }}
+                        {% csrf_token %}
+                        <button type="submit">Add comment</button>
+                        {% if request.user != object.user %}
+                        {% if user.is_authenticated %}
+                            <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                        {% else %}
+                        <a class="btn btn-outline-primary" id="fa" href="{% url 'login' %}" style="text-decoration: none;">Login to answer this Question</a>
+                        {% endif %}
+                    {% endif %}
+                    </form>
+
+                    <!-- Comment with nested comments -->
+                    {% for answer in answers %}
+                        <div class="comment">
+                            <p class="info">{{ answer.user.username|title }} | {{ answer.responded_on|date:"j F, Y" }}</p>
+                                {{ answer.content }}
+
+                            {% for replay in answer.replies.all %}
+                                <p class="info">{{ replay.user.username }} | {{ replay.responded_on }}</p>
+                                <li>{{ replay.content }}</li>
+                            {% endfor %}
+
+                            <h5>Replay</h5>
+                            <form action="." method="post">
+                                {{ answer_form.as_p }}
+                                {% csrf_token %}
+                                <!-- Hidden input for parent comment.id -->
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <input class="btn btn-primary" type="submit" value="Replay">
+                            </form>
+                        </div>
+                    {% empty %}
+                    <h4>There are no comments yet.</h4>
+                    {% endfor %}
+                </div>    
+            </div> <br>
+        </div> 
+    </div>
+</div>
+
+{% endblock content %}

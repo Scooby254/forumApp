@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
 *{
   margin: 0;
   padding: 0;
@@ -15,7 +15,7 @@ body{
 .container{
   max-width: 700px;
   width: 100%;
-  background:linear-gradient(135deg, #b3b87f, #beb669, #ddd591);
+  background:linear-gradient(135deg, #84b87f, #a4d6c1, #4c8361c9);
   padding: 25px 30px;
   top:100px;
   left:50px;
@@ -33,18 +33,18 @@ body{
 .container .title{
   font-size: 25px;
   font-weight: 600;
-  position: relative;
+  position: absolute;
   margin: 20px 0 12px 0;
 }
 .container .title::before{
   content: "";
-  position: relative;
+  position: absolute;
   left: 0;
   bottom: 0;
   height: 3px;
   width: 30px;
   border-radius: 5px;
-  background: rgb(230, 179, 15);
+  background: rgb(111, 137, 100);
 }
 .content form .user-details{
   display: flex;
@@ -77,10 +77,10 @@ form .input-box span.details{
   border-color: #eea41c;
 }
 a {
-  color:#1f0664;
+  color:#40521b;
 }
 a:hover{
-  color:rgb(76, 85, 27);
+  color:rgb(233, 242, 184);
 }
  form .button{
    height: 45px;
@@ -145,7 +145,7 @@ form .user-details .input-box{
   position: absolute;
   height: 2px;
   width: 100%;
-  background: #ccc;
+  background: #898b76;
   left: 0;
   bottom: 0;
 }
@@ -183,4 +183,9 @@ form .user-details .input-box{
 }
 .side-label{
   width:45px;
+}
+.profile_pic{
+  max-width: 100px;
+  margin: 0 auto;
+  border-radius: 50%;
 }

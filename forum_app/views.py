@@ -133,6 +133,29 @@ class QuestionDetailView(DetailView):
         context['total_likes'] = total_likes
         context['liked'] = liked
         return context
+    
+def question_detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    answers = Answer.objects.filter(question=question, parent__isnull=True)
+
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            parent_id = request.POST.get('parent_id')
+            parent = None
+            if parent_id:
+                parent = Answer.objects.get(pk=parent_id)
+            answer = Answer.objects.create(
+                content=content,
+                question=question,
+                parent=parent
+            )
+            return redirect('question_detail', question_id=question.id)
+    else:
+        form = AnswerForm()
+
+    return render(request, 'question_detail.html', {'question': question, 'answers': answers, 'form': form})
 
 #CBV FOR CREATING A NEW QUESTION/DISCUSSION
 class QuestionCreateView(CreateView, LoginRequiredMixin):
@@ -178,8 +201,13 @@ class AddAnswerView(CreateView, LoginRequiredMixin):
     def form_valid(self, form):
         form.instance.question_id = self.kwargs['pk']
         form.instance.user = self.request.user
+        id=self.request.POST.get('question_id')
         return super().form_valid(form)
-    success_url= reverse_lazy('questions_list')
+    #success_url= reverse_lazy('questions_list')
+    def get_success_url(self):
+        ans_id = self.kwargs['pk']
+        return reverse_lazy('questions_detail', kwargs = {"pk": ans_id})
+
 
 """ class AnswerDetailView(CreateView, LoginRequiredMixin):
     model = Answer
@@ -199,5 +227,6 @@ class ValidateAnswerView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('questions_detail', kwargs = {"pk": self.get_object().question.id}) 
+
 
 

@@ -27,12 +27,12 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.prof_pic.path)
 
-class Tags(models.Model):
+class Tag(models.Model):
     tag = models.CharField(max_length=20)
 
     def __str__(self):
         return self.tag.title()
-class Categories(models.Model):
+class Category(models.Model):
     category = models.CharField(max_length=50)
 
     def __str__(self):
@@ -46,8 +46,8 @@ class Question(models.Model):
     #body = models.TextField(null=False, blank=False)
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now = True)
-    categories = models.ManyToManyField(Categories)
-    tags = models.ManyToManyField(Tags)
+    categories = models.ManyToManyField(Category)
+    tags = models.ManyToManyField(Tag)
     likes = models.ManyToManyField(User, related_name='questions_post')
 
     def total_likes(self):
@@ -66,9 +66,15 @@ class Answer(models.Model):
     responded_on = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, related_name="answer", on_delete=models.CASCADE)
     correct = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s - %s' %(self.question.title, self.content)#f'{self.user.username} - Answer'
+        return 'answer by {}'.format(self.user.username)
+                #'%s - %s' %(self.question.title, self.content)#f'{self.user.username} - Answer'
+
+    def children(self):
+        return Answer.objects.filter(parent=self)
 
     def get_absolute_url(self):
         return reverse('questions_detail', kwargs={'pk':self.pk})
