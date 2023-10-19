@@ -124,22 +124,52 @@ class QuestionDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(QuestionDetailView, self).get_context_data()
         a = get_object_or_404(Question, id=self.kwargs['pk'])
-        total_likes = a.total_likes()
-        liked = False
+        answers = Answer.objects.filter(question=a, parent__isnull=True)
+        initial_data = {
+            "object_id":a.id
+        }
+        if self.request.method == 'POST':
+            form = AnswerForm(self.request.POST or None, initial=initial_data)
+            if form.is_valid():
+                content = form.cleaned_data.get['content']
+                parent_obj = None
+                try:
+                    parent_id = int(self.request.POST.get('parent_id'))
+                except:
+                    parent_id = None
+                #parent = None
+                if parent_id:
+                    #parent = Answer.objects.get(pk=parent_id)
+                    parent_qs = Answer.objects.filter(id=parent_id)
+                    if parent_qs.exists() and parent_qs.count()==1:
+                        parent_obj = parent_qs.first()
+                new_answer, created = Answer.objects.get_or_create(
+                            user=self.request.user,
+                            content=content,
+                            question=a,
+                            parent=parent_obj
+                        )
+                return redirect('question_detail', pk=a.id)
+        else:
+            form = AnswerForm()
+            
+            total_likes = a.total_likes()
+            liked = False
 
-        if a.likes.filter(id=self.request.user.id).exists():
-            liked = True
-        
-        context['total_likes'] = total_likes
-        context['liked'] = liked
-        return context
+            if a.likes.filter(id=self.request.user.id).exists():
+                liked = True
+            context = {'question': a, 'answers': answers, 'form': form, 
+                       }
+            context['total_likes'] = total_likes
+            context['liked'] = liked
+            return context
     
-def question_detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+def question_detail(request, pk):
+    question = get_object_or_404(Question, pk=pk)
     answers = Answer.objects.filter(question=question, parent__isnull=True)
 
     if request.method == 'POST':
-        form = AnswerForm(request.POST)
+        form = AnswerForm(request.POST or None)
         if form.is_valid():
             content = form.cleaned_data['content']
             parent_id = request.POST.get('parent_id')
@@ -147,15 +177,16 @@ def question_detail(request, question_id):
             if parent_id:
                 parent = Answer.objects.get(pk=parent_id)
             answer = Answer.objects.create(
-                content=content,
-                question=question,
-                parent=parent
-            )
-            return redirect('question_detail', question_id=question.id)
+                        user=request.user,
+                        content=form.cleaned_data['content'],
+                        question=question,
+                        parent=parent
+                    )
+            return redirect('question_detail', pk=question.id)
     else:
         form = AnswerForm()
-
-    return render(request, 'question_detail.html', {'question': question, 'answers': answers, 'form': form})
+    context = {'question': question, 'answers': answers, 'form': form}
+    return render(request, 'forum_app/question_detail_with_replies.html', context)
 
 #CBV FOR CREATING A NEW QUESTION/DISCUSSION
 class QuestionCreateView(CreateView, LoginRequiredMixin):

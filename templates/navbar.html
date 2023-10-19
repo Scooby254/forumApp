@@ -22,6 +22,8 @@
         max-width: 200px;
         margin: 0 auto;
         border-radius: 50%;
+        align-items: center;
+        text-align: center;
     }
 </style>
 <nav class="navbar navbar-expand-lg" style="background-color: rgb(8, 40, 8);">
@@ -63,8 +65,13 @@
     </form>
 
     {% if user.is_authenticated %}
-    <a href="{% url 'profile_settings' %}"><img src="{{request.user.profile.prof_pic.url}}" class="profile_pic" alt="" style="height: 40px; margin-right: 5px;"></a>
-    <a id="navlink" href="{%url 'logout'%}"><button style="background-color: rgb(255, 255, 255); margin-right: 10px;" class="btn">Logout</button></a>
+    {%if request.user.profile.prof_pic %}
+            <a href="{% url 'profile_settings' %}"><img src="{request.user.profile.prof_pic.url}" class="profile_pic" alt="" style="height: 40px; margin-right: 5px;"></a>
+        {%else%}
+        <a class="profile_pic"  style="color: rgb(17, 67, 8); align-items:center !important;justify-content:center !important;background-color: rgb(255, 255, 255);width: 50px;height: 50px;border-radius: 50px; text-decoration: none;">
+            <h3 style="padding-top: 17%;">{{ request.user.profile.get_first_letter }}</h3></a>
+    {%endif%}
+    <a id="navlink" href="{%url 'logout'%}"><button style="background-color: rgb(255, 255, 255); margin-right: 10px; margin-left: 10px;" class="btn">Logout</button></a>
     {%else%}
     <a id="navlink" href="{%url 'login'%}"><button class="btn btn-primary">Login</button></a>
     {%endif%}

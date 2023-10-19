@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+{%load static%}
+<div class="container">
+    <div id="sub-nav"></div>
+    <div class="list-question">
+        <div class="questions">
+            <div class="container" style="background-color: rgba(163, 187, 167, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
+                border-radius: 20px;" >
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <h4 class="card-title" style="margin-bottom: 0px; display: inline; float:left">{{question.title}}</h4>
+                        <h6 id="fh6" style="font-size: 15px; font-style: italic; color: rgb(134, 131, 131); display: inline-flex; float: right;">Asked By: <a href="">{{ question.user|title }}</a>
+                            &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ question.created|date:"j F, Y" }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p id="fh6" style="margin-top: 0%;">{{ question.body|safe }}</p>
+                    </div>
+                </div>
+                    
+                {% if request.user == object.user %}
+                <div style="text-align: right;">
+                    <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
+                    <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>
+                    <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'questions_list' %}">&#x21a9;</a>
+                </div>
+                {% endif %}
+
+                <div class="container" >          
+
+                    <!-- Display comments and form -->
+                    {% for answer in answers %}
+                    <!-- Display comment content -->
+                        <div class="answer">
+                        <strong>{{ answer.user }}:</strong> {{ answer.content }}
+                        <a href="#" class="reply" data-parent="{{ answer.id }}">Reply</a>
+                        {% if answer.answer_set.all%}
+                            <div class="nested-comments">
+                                {% with replies as answer.answer_set.all %}
+                                {%include 'forum_app/replies.html' %}
+                                {% endwith%}
+                            </div>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+                    <br>    
+                    <h5>Your Answer</h5>
+                    <form action="{%  url 'questions_answer' pk=question.id %}" method="post">
+                        {% csrf_token %}
+                        {{form|crispy}}
+                        {{ form.media }}
+                        <button type="submit">Submit Comment</button>
+                      </form> 
+                   
+                </div>    
+            </div> <br>
+        </div> 
+    </div>
+</div>
+
+{% endblock content %}

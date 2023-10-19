@@ -1,0 +1,15 @@
+{% for answer in answer.replies.all %}
+    <div class="answer">
+        {{ answer.user }} said: {{ answer.content }}
+        <a href="#" class="reply" data-parent="{{ answer.id }}">Reply</a>
+        {% if answer.answer_set.all %}
+            <div class="nested-comments">
+                {% for reply in comment.replies.all %}
+                <div style="margin-left: 20px;">
+                  <strong>{{ reply.author }}:</strong> {{ reply.content }}
+                </div>
+              {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}

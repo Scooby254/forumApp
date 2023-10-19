@@ -31,6 +31,7 @@ class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ['content']
+        labels = {"content":""}
         widgets = {
             'content':forms.TextInput(attrs={'class':'form-control'}),
             #'correct':forms.CheckboxInput()
