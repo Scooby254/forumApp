@@ -1,24 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load crispy_forms_tags %}
 {%load static%}
 <div class="container">
     <div id="sub-nav"></div>
     <div class="list-question">
         <div class="questions">
-            <div class="container" style="background-color: rgba(163, 187, 167, 0.808); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
-                border-radius: 20px;" >
-                <div class="card">
+            <div class="container" style="background-color: rgba(235, 243, 236, 0.516); padding: 5px; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px; 
+                border-radius: 10px;" >
+                <!-- <div class="card">
                     <div class="card-header" style="justify-content: center;">
+                        
                         <h4 class="card-title" style="margin-bottom: 0px; display: inline; float:left">{{question.title}}</h4>
-                        <h6 id="fh6" style="font-size: 15px; font-style: italic; color: rgb(134, 131, 131); display: inline-flex; float: right;">Asked By: <a href="">{{ object.user|title }}</a>
-                            &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ object.created|date:"j F, Y" }}</h6>
+                        <h6 id="fh6" style="font-size: 15px; font-style: italic; color: rgb(134, 131, 131); display: inline-flex; float: right;">Asked By: <a href="">{{ question.user|title }}</a>
+                            &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; On: {{ question.created|date:"j F, Y" }}</h6>
+                            
                     </div>
                     <div class="card-body">
                         <p id="fh6" style="margin-top: 0%;">{{ question.body|safe }}</p>
                     </div>
+                </div> -->
+                <div class="row">
+                    <h5>{{question.title}}</h5>
+                    <p>{{question.categories}}</p>
+                    <hr style="width: 95%; margin:0 auto;">
+                    <div class="row">
+                        <div class="col-md-1">
+                            {%if not question.user.profile.prof_pic%}
+                            <div class="profile_pic"  style="float:right; color: rgb(253, 253, 253); align-items:center !important;justify-content:center !important;background-color: rgb(10, 44, 15);width: 30px;height: 30px;border-radius: 50px; text-decoration: none;">
+                                <h5 style="padding-top: 7%;">{{ question.user.profile.get_first_letter }}</h5></div>
+                            {%else%}
+                            <img src="{{question.user.profile.prof_pic.url}}" style="height: 40px; float: right;"alt="">
+                            {%endif%}
+                        </div>
+                        <div class="col-md-11">
+                            <h5 style="display: inline; float: left;">{{question.user|title}}</h5>
+                            <h6 style="display: inline; float: right;">{{ question.created|date:"j F, Y" }}</h6>
+                            <br>
+                            <p>{{question.body|safe}}</p>
+                        </div>
+                    </div>
+                    <hr style="width: 95%; margin:0 auto;">
+
                 </div>
                     
-                {% if request.user == object.user %}
+                {% if request.user == question.user %}
                 <div style="text-align: right;">
                     <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'questions_update' question.id %}">&#x270E;</a>
                     <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'questions_delete' question.id %}">&#x2716;</a>
@@ -26,7 +52,7 @@
                 </div>
                 {% endif %}
 
-                    <form action="{% url 'like_post' object.pk %}" method="POST">
+                    <form action="{% url 'like_post' question.pk %}" method="POST">
                         
                         {% csrf_token %}
                         {% if user.is_authenticated %}
@@ -50,7 +76,7 @@
                     {% if not question.answer.all %}
                         <h3>No Answers yet...</h3>
                     {% else %}
-                        {% for answer in question.answer.all %}
+                        {% for answer in answers %}
                         
                             {% if answer.correct %}
                             <div class="row" style="margin-bottom: 10px; border-radius: 10px; background-color:rgb(222, 224, 219); box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px 0px;">
@@ -58,11 +84,38 @@
                                     <img src="{{STATIC_URL}} /static/images/tick.png" style="max-width: 40px;"></img>
                                 </div>
                                 <div class="col-md-11">
-                                    <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3><hr>
+                                    <div class="row" style="align-items: center;">
+                                        <div class="col-md-9">
+                                            <!-- <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3> -->
+                                            {%if not question.user.profile.prof_pic%}
+                                            <div class="profile_pic"  style="float:left; color: rgb(253, 253, 253); align-items:center !important;justify-content:center !important;background-color: rgb(10, 44, 15);width: 30px;height: 30px;border-radius: 50px; text-decoration: none;">
+                                                <h5 style="padding-top: 7%;">{{ answer.user.profile.get_first_letter }}</h5></div>
+                                            {%else%}
+                                            <img src="{{answer.user.profile.prof_pic.url}}" style="height: 40px; float: left;"alt="">
+                                            {%endif%}
+                                            <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
+                                        </div>
+                                        <div class="col-md-3">
+                                            {% if request.user == question.user %}
+                                                <a href="{% url 'validate_answer' answer.id %}">Correct?</a>
+                                            {%endif%}
+                                        </div>
+                                        <hr style="margin: 0 auto;">
+                                    </div>
                                     <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
-                                    {% if request.user == object.user %}
-                                        <a href="{% url 'validate_answer' answer.id %}">Correct?</a>
-                                    {%endif%}
+                                    {%for child_answer in answer.children %}
+                                    <blockquote>
+                                        <p>{{child_answer.content}}</p>
+                                        <footer>Replied by: {{child_answer.user.username|title}}| {{child_answer.responded_on|timesince}}</footer>
+                                    </blockquote>
+                                    {%endfor%}
+                                    <!-- <form action="{%  url 'questions_answer' pk=question.id %}" method="post">
+                                        {% csrf_token %}
+                                        {{form|crispy}}
+                                        {{ form.media }}
+                                        <input type="hidden" name="parent_id" value="{{answer.id}}">
+                                        <input type="submit" value="Reply" class="btn btn-default">
+                                    </form> -->
                                     
                                 </div>
                             </div>
@@ -71,11 +124,26 @@
                                 <div class="col-md-1" style="justify-content: center;">
                                 </div>
                                 <div class="col-md-11">
-                                    <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3><hr>
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <h3 style="margin-top:5px; font-weight: normal; font-size: 15px;">{{answer.content|safe}}</h3>
+                                        </div>
+                                        <div class="col-md-3">
+                                            {% if request.user == question.user %}
+                                                <a href="{% url 'validate_answer' answer.id %}">Correct?</a>
+                                            {%endif%}
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    
                                     <h3 style="font-size: 10px;">Answered by: <i><a href="">{{answer.user.username|title}}</a> - On: {{answer.responded_on|date:"j F, Y"}}</i></h3>
-                                    {% if request.user == object.user %}
-                                        <a href="{% url 'validate_answer' answer.id %}">Correct?</a>
-                                    {%endif%}
+                                    <form action="{%  url 'questions_answer' pk=question.id %}" method="post">
+                                        {% csrf_token %}
+                                        {{form|crispy}}
+                                        {{ form.media }}
+                                        <input type="hidden" name="parent_id" value="{{answer.id}}">
+                                        <input type="submit" value="Reply" class="btn btn-default">
+                                    </form>
                                     
                                 </div>
                             </div>
@@ -84,11 +152,21 @@
                     {% endif %}
                     {% if request.user != object.user %}
                         {% if user.is_authenticated %}
-                            <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a>
+                            <!-- <a class="btn btn-outline-primary" id="fa" href="{% url 'questions_answer' question.id %}" style="text-decoration: none;">Answer Question</a> -->
+                            <h5>Your Answer</h5>
+                            <form action="{%  url 'questions_answer' pk=question.id %}" method="post">
+                                {% csrf_token %}
+                                {{form|crispy}}
+                                {{ form.media }}
+                                <button class="btn btn-outline-primary" type="submit">Submit Comment</button>
+                            </form>
+
                         {% else %}
                         <a class="btn btn-outline-primary" id="fa" href="{% url 'login' %}" style="text-decoration: none;">Login to answer this Question</a>
                         {% endif %}
                     {% endif %}
+                    
+                     
                 </div>    
             </div> <br>
         </div> 

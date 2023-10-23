@@ -9,7 +9,12 @@
             <h3 style="text-align:center">Account Settings</h3>
             <hr>
             {% include "messages.html" %}
-            <img src="{{request.user.profile.prof_pic.url}}" alt="" class="profile_pic">
+            <img src="{%if request.user.profile.prof_pic%}
+            {{request.user.profile.prof_pic.url}}
+            {%else%} 
+            {{request.user.profile.get_first_letter}}
+            {%endif%}"
+             alt="{{request.user.username}}" class="profile_pic">
         </div>
     </div>
     <div class="col-md-8">

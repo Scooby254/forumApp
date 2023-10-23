@@ -1,38 +1,67 @@
 {%extends 'base.html'%}
 {%block content%}
 
-<div class="container">
-    <div class="list-question">
-        <div class="questions">
-            <table class="table table-bordered mt-0 table-striped" style="margin-bottom:0px;">
-                <thead class="border-bottom font-italic font-weight-bold">
-                    <tr style="font-weight: bolder;">
-                        <td>Discussion Brief</td>
-                        <td>Author</td>
-                        <td>Replies</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for question in questions %}
-                        <tr>
-                            <td><h4>{{question.title}}</h4></hr>
-                                <p>
-                                    {% if question.body|wordcount <= 20 %}
-                                    <p id="fh6" style="text-align: left;">{{ question.body | safe}}</p>
-                                    {% else %}
-                                    <p id="fh6" style="text-align: left;">{{ question.body|truncatewords:20 |safe}} <a href="{% url 'questions_detail' question.id %}">Read More</a></p>
-                                    {% endif %}
-                                </p>
-                            </td>
-                            <td>{{question.user}}</td>
-                            <td>{{question.answer.all.count}}</td>
-                            <td><a href="{% url 'questions_detail' question.id %}">view</a></td>
+<div class="row">
+    <div class="col-lg-2">
+        <h4>Top topics</h4>
+        <hr>
+        <ul>
+            {%for category in questions.tags%}
+            <li>{{category}}</li>
+            {%endfor%}
+        </ul>
+    </div>
+    <div class="col-lg-10">
+        <div class="container">
+            <div class="list-question">
+                <div class="questions">
+                    <table class="table table-bordered mt-0 table-striped" style="margin-bottom:0px;">
+                        <thead class="border-bottom font-italic font-weight-bold">
+                            <tr style="font-weight: bolder;">
+                                <td>Discussion Brief</td>
+                                <td>Author</td>
+                                <td>Replies</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in questions %}
                             
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                                <tr onclick="location.href='{% url 'questions_detail' question.id %}';">
+                                        <td><h5>
+                                            <!-- <a href="{% url 'questions_detail' question.id %}" style="text-decoration: none;">
+                                                {{question.title}}
+                                            </a> -->
+                                            {{question.title}}
+                                            </h5>
+                                            </hr>
+                                            <p>
+                                                {% if question.body|wordcount <= 20 %}
+                                                <p id="fh6" style="text-align: left;">{{ question.body | safe}}</p>
+                                                {% else %}
+                                                <p id="fh6" style="text-align: left;">{{ question.body|truncatewords:20 |safe}} <a href="{% url 'questions_detail' question.id %}">Read More</a></p>
+                                                {% endif %}
+                                            </p>
+                                        </td>
+                                        <td style="align-items: center !important; justify-content:center !important">
+                                            {%if not question.user.profile.prof_pic%}
+                                            <div class="profile_pic"  style="color: rgb(253, 253, 253); align-items:center !important;justify-content:center !important;background-color: rgb(10, 44, 15);width: 30px;height: 30px;border-radius: 50px; text-decoration: none;">
+                                                <h5 style="padding-top: 7%;">{{ question.user.profile.get_first_letter }}</h5></div>
+                                            {%else%}
+                                                <img src="{{question.user.profile.prof_pic.url}}" class="profile_pic" 
+                                                alt="" style="height: 30px; align-items: center;">
+                                            {%endif%}
+                                        </td>
+                                        <td>{{question.answer.all.count}}</td>
+                                        <td>{{question.created|date:"d M, Y"}}</td>
+                                   </a> 
+                                </tr>
+                            
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
